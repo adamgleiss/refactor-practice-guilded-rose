@@ -2,15 +2,18 @@
 
 namespace App;
 
-final class GuildedRose {
+final class GuildedRose
+{
 
     private $items = [];
 
-    public function __construct($items) {
+    public function __construct($items)
+    {
         $this->items = $items;
     }
 
-    public function updateQuality() {
+    public function updateQuality()
+    {
         foreach ($this->items as $item) {
             $this->updateItemQuality($item);
             $this->updateSellInDate($item);
@@ -47,7 +50,7 @@ final class GuildedRose {
 
     private function updateSellInDate($item): void
     {
-        if($this->isSulfuras($item)) {
+        if ($this->isSulfuras($item)) {
             return;
         }
 
@@ -56,25 +59,26 @@ final class GuildedRose {
 
     private function updateItemQualityForExpiredItems($item): void
     {
-        if ($item->sell_in >= 0) {
+        if ($item->sell_in >= 0 || $this->isSulfuras($item)) {
             return;
         }
 
-        if (!$this->isAgedBrie($item)) {
-            if (!$this->isBackstagePass($item)) {
-                if ($item->quality > 0) {
-                    if (!$this->isSulfuras($item)) {
-                        $item->quality = $item->quality - 1;
-                    }
-                }
-            } else {
-                $item->quality = $item->quality - $item->quality;
-            }
-        } else {
+        if ($this->isAgedBrie($item)) {
             if ($item->quality < 50) {
                 $item->quality = $item->quality + 1;
             }
+            return;
         }
+
+        if ($this->isBackstagePass($item)) {
+            $item->quality = 0;
+            return;
+        }
+
+        if ($item->quality > 0) {
+            $item->quality = $item->quality - 1;
+        }
+
     }
 
     private function isAgedBrie(Item $item)
