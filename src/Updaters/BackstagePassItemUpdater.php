@@ -6,7 +6,7 @@ use App\Item;
 
 class BackstagePassItemUpdater extends ItemUpdater
 {
-    public function updateItemQuality(Item $item)
+    public function updateItemQuality(Item $item): void
     {
         if ($item->quality < 50) {
             $item->quality = $item->quality + 1;
@@ -21,5 +21,14 @@ class BackstagePassItemUpdater extends ItemUpdater
                 }
             }
         }
+    }
+
+    public function updateItemQualityForExpiredItems($item): void
+    {
+        if ($item->sell_in >= 0) {
+            return;
+        }
+
+        $item->quality = 0;
     }
 }

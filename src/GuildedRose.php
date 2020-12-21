@@ -21,9 +21,9 @@ final class GuildedRose
     {
         foreach ($this->items as $item) {
             $updater = $this->getUpdaterForItem($item);
-            $updater->updateItemQuality($item);;
+            $updater->updateItemQuality($item);
             $updater->updateItemSellIn($item);
-            $this->updateItemQualityForExpiredItems($item);
+            $updater->updateItemQualityForExpiredItems($item);
         }
     }
 
@@ -42,45 +42,5 @@ final class GuildedRose
         }
 
         return new ItemUpdater();
-    }
-
-    private function updateItemQualityForExpiredItems($item): void
-    {
-        if ($item->sell_in >= 0 || $this->isSulfuras($item)) {
-            return;
-        }
-
-        if ($this->isAgedBrie($item)) {
-            if ($item->quality < 50) {
-                $item->quality = $item->quality + 1;
-            }
-
-            return;
-        }
-
-        if ($this->isBackstagePass($item)) {
-            $item->quality = 0;
-
-            return;
-        }
-
-        if ($item->quality > 0) {
-            $item->quality = $item->quality - 1;
-        }
-    }
-
-    private function isAgedBrie(Item $item)
-    {
-        return $item->name === 'Aged Brie';
-    }
-
-    private function isBackstagePass(Item $item)
-    {
-        return $item->name === 'Backstage passes to a TAFKAL80ETC concert';
-    }
-
-    private function isSulfuras(Item $item)
-    {
-        return $item->name === 'Sulfuras, Hand of Ragnaros';
     }
 }
