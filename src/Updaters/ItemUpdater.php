@@ -8,8 +8,11 @@ class ItemUpdater
 {
     public function updateItemQuality(Item $item): void
     {
-        if ($item->quality > 0) {
-            $item->quality = $item->quality - 1;
+        $depreciation = $this->isExpired($item) ? 2 : 1;
+        $item->quality = $item->quality - $depreciation;
+
+        if ($item->quality < 0) {
+            $item->quality = 0;
         }
     }
 
@@ -18,10 +21,8 @@ class ItemUpdater
         $item->sell_in = $item->sell_in - 1;
     }
 
-    public function updateItemQualityForExpiredItems($item): void
+    protected function isExpired(Item $item)
     {
-        if ($item->sell_in < 0 && $item->quality > 0) {
-            $item->quality = $item->quality - 1;
-        }
+        return $item->sell_in < 0;
     }
 }

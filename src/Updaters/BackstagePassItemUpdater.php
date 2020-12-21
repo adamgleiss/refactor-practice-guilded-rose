@@ -21,14 +21,9 @@ class BackstagePassItemUpdater extends ItemUpdater
                 }
             }
         }
-    }
 
-    public function updateItemQualityForExpiredItems($item): void
-    {
-        if ($item->sell_in >= 0) {
-            return;
+        if ($item->sell_in < 1) {
+            $item->quality = 0;
         }
-
-        $item->quality = 0;
     }
 }

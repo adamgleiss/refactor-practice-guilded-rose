@@ -8,19 +8,11 @@ class AgedBrieItemUpdater extends ItemUpdater
 {
     public function updateItemQuality(Item $item): void
     {
-        if ($item->quality < 50) {
-            $item->quality = $item->quality + 1;
-        }
-    }
+        $appreciation = $this->isExpired($item) ? 2 : 1;
+        $item->quality = $item->quality + $appreciation;
 
-    public function updateItemQualityForExpiredItems($item): void
-    {
-        if ($item->sell_in >= 0) {
-            return;
-        }
-
-        if ($item->quality < 50) {
-            $item->quality = $item->quality + 1;
+        if ($item->quality > 50) {
+            $item->quality = 50;
         }
     }
 }

@@ -21,9 +21,8 @@ final class GuildedRose
     {
         foreach ($this->items as $item) {
             $updater = $this->getUpdaterForItem($item);
-            $updater->updateItemQuality($item);
             $updater->updateItemSellIn($item);
-            $updater->updateItemQualityForExpiredItems($item);
+            $updater->updateItemQuality($item);
         }
     }
 

@@ -15,9 +15,4 @@ class SulfrasItemUpdater extends ItemUpdater
     {
         return;
     }
-
-    public function updateItemQualityForExpiredItems($item): void
-    {
-        return;
-    }
 }
