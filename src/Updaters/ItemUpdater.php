@@ -6,6 +6,8 @@ use App\Item;
 
 class ItemUpdater
 {
+    const MAX_QUALITY = 50;
+
     public function updateItemQuality(Item $item): void
     {
         $depreciation = $this->isExpired($item) ? 2 : 1;
@@ -24,5 +26,12 @@ class ItemUpdater
     protected function isExpired(Item $item)
     {
         return $item->sell_in < 0;
+    }
+
+    protected function applyQualityCap(Item $item)
+    {
+        if ($item->quality > self::MAX_QUALITY) {
+            $item->quality = self::MAX_QUALITY;
+        }
     }
 }

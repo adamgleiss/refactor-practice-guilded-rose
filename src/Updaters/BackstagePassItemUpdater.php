@@ -8,22 +8,26 @@ class BackstagePassItemUpdater extends ItemUpdater
 {
     public function updateItemQuality(Item $item): void
     {
-        if ($item->quality < 50) {
-            $item->quality = $item->quality + 1;
-            if ($item->sell_in < 11) {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
-                }
-            }
-            if ($item->sell_in < 6) {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
-                }
-            }
+        if ($this->isExpired($item)) {
+            $item->quality = 0;
+            return;
         }
 
-        if ($item->sell_in < 1) {
-            $item->quality = 0;
+        $item->quality = $item->quality += $this->determineAppreciation($item);
+        $this->applyQualityCap($item);
+
+    }
+
+    private function determineAppreciation(Item $item)
+    {
+        $appreiation = 1;
+        if ($item->sell_in < 11) {
+            $appreiation++;
         }
+        if ($item->sell_in < 6) {
+            $appreiation++;
+        }
+
+        return $appreiation;
     }
 }
