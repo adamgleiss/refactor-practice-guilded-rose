@@ -23,29 +23,37 @@ final class GuildedRose
 
     private function updateItemQuality($item): void
     {
-        if (!$this->isAgedBrie($item) and !$this->isBackstagePass($item)) {
-            if ($item->quality > 0) {
-                if (!$this->isSulfuras($item)) {
-                    $item->quality = $item->quality - 1;
-                }
-            }
-        } else {
+        if ($this->isSulfuras($item) || ($item->quality === 0)) {
+            return;
+        }
+
+        if ($this->isAgedBrie($item)) {
             if ($item->quality < 50) {
                 $item->quality = $item->quality + 1;
-                if ($this->isBackstagePass($item)) {
-                    if ($item->sell_in < 11) {
-                        if ($item->quality < 50) {
-                            $item->quality = $item->quality + 1;
-                        }
+            }
+
+            return;
+        }
+
+        if ($this->isBackstagePass($item)) {
+            if ($item->quality < 50) {
+                $item->quality = $item->quality + 1;
+                if ($item->sell_in < 11) {
+                    if ($item->quality < 50) {
+                        $item->quality = $item->quality + 1;
                     }
-                    if ($item->sell_in < 6) {
-                        if ($item->quality < 50) {
-                            $item->quality = $item->quality + 1;
-                        }
+                }
+                if ($item->sell_in < 6) {
+                    if ($item->quality < 50) {
+                        $item->quality = $item->quality + 1;
                     }
                 }
             }
+
+            return;
         }
+
+        $item->quality = $item->quality - 1;
     }
 
     private function updateSellInDate($item): void
@@ -67,18 +75,19 @@ final class GuildedRose
             if ($item->quality < 50) {
                 $item->quality = $item->quality + 1;
             }
+
             return;
         }
 
         if ($this->isBackstagePass($item)) {
             $item->quality = 0;
+
             return;
         }
 
         if ($item->quality > 0) {
             $item->quality = $item->quality - 1;
         }
-
     }
 
     private function isAgedBrie(Item $item)
