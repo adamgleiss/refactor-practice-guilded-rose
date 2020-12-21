@@ -2,6 +2,11 @@
 
 namespace App;
 
+use App\Updaters\AgedBrieItemUpdater;
+use App\Updaters\BackstagePassItemUpdater;
+use App\Updaters\ItemUpdater;
+use App\Updaters\SulfrasItemUpdater;
+
 final class GuildedRose
 {
 
@@ -15,54 +20,28 @@ final class GuildedRose
     public function updateQuality()
     {
         foreach ($this->items as $item) {
-            $this->updateItemQuality($item);
-            $this->updateSellInDate($item);
+            $updater = $this->getUpdaterForItem($item);
+            $updater->updateItemQuality($item);;
+            $updater->updateItemSellIn($item);
             $this->updateItemQualityForExpiredItems($item);
         }
     }
 
-    private function updateItemQuality($item): void
+    private function getUpdaterForItem(Item $item)
     {
-        if ($this->isSulfuras($item) || ($item->quality === 0)) {
-            return;
+        if ($item->name === 'Aged Brie') {
+            return new AgedBrieItemUpdater();
         }
 
-        if ($this->isAgedBrie($item)) {
-            if ($item->quality < 50) {
-                $item->quality = $item->quality + 1;
-            }
-
-            return;
+        if ($item->name === 'Backstage passes to a TAFKAL80ETC concert') {
+            return new BackstagePassItemUpdater();
         }
 
-        if ($this->isBackstagePass($item)) {
-            if ($item->quality < 50) {
-                $item->quality = $item->quality + 1;
-                if ($item->sell_in < 11) {
-                    if ($item->quality < 50) {
-                        $item->quality = $item->quality + 1;
-                    }
-                }
-                if ($item->sell_in < 6) {
-                    if ($item->quality < 50) {
-                        $item->quality = $item->quality + 1;
-                    }
-                }
-            }
-
-            return;
+        if ($item->name === 'Sulfuras, Hand of Ragnaros') {
+            return new SulfrasItemUpdater();
         }
 
-        $item->quality = $item->quality - 1;
-    }
-
-    private function updateSellInDate($item): void
-    {
-        if ($this->isSulfuras($item)) {
-            return;
-        }
-
-        $item->sell_in = $item->sell_in - 1;
+        return new ItemUpdater();
     }
 
     private function updateItemQualityForExpiredItems($item): void
