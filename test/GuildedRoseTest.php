@@ -109,4 +109,28 @@ class GuildedRoseTest extends TestCase
         $this->assertEquals("Sulfuras, Hand of Ragnaros, 7, 80", (string)$items[1]);
         $this->assertEquals("item, -3, 2", (string)$items[2]);
     }
+
+    public function testConjuredItem()
+    {
+        $item = new Item("Conjured", 3, 4);
+        $gildedRose = new GuildedRose([$item]);
+        $gildedRose->updateQuality();
+        $this->assertEquals("Conjured, 2, 3", (string)$item);
+    }
+
+    public function testExpiredConjuredItem()
+    {
+        $item = new Item("Conjured", -2, 8);
+        $gildedRose = new GuildedRose([$item]);
+        $gildedRose->updateQuality();
+        $this->assertEquals("Conjured, -3, 4", (string)$item);
+    }
+
+    public function testExpiredConjuredItemMinQuality()
+    {
+        $item = new Item("Conjured", -2, 3);
+        $gildedRose = new GuildedRose([$item]);
+        $gildedRose->updateQuality();
+        $this->assertEquals("Conjured, -3, 0", (string)$item);
+    }
 }
