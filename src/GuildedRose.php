@@ -4,6 +4,7 @@ namespace App;
 
 use App\Updaters\AgedBrieItemUpdater;
 use App\Updaters\BackstagePassItemUpdater;
+use App\Updaters\ConjuredItemUpdater;
 use App\Updaters\ItemUpdater;
 use App\Updaters\SulfrasItemUpdater;
 
@@ -38,6 +39,10 @@ final class GuildedRose
 
         if ($item->name === 'Sulfuras, Hand of Ragnaros') {
             return new SulfrasItemUpdater();
+        }
+
+        if ($item->name === 'Conjured') {
+            return new ConjuredItemUpdater();
         }
 
         return new ItemUpdater();

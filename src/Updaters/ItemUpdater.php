@@ -7,15 +7,13 @@ use App\Item;
 class ItemUpdater
 {
     const MAX_QUALITY = 50;
+    const MIN_QUALITY = 0;
 
     public function updateItemQuality(Item $item): void
     {
         $depreciation = $this->isExpired($item) ? 2 : 1;
         $item->quality = $item->quality - $depreciation;
-
-        if ($item->quality < 0) {
-            $item->quality = 0;
-        }
+        $this->applyQualityFloor($item);
     }
 
     public function updateItemSellIn(Item $item): void
@@ -32,6 +30,13 @@ class ItemUpdater
     {
         if ($item->quality > self::MAX_QUALITY) {
             $item->quality = self::MAX_QUALITY;
+        }
+    }
+
+    protected function applyQualityFloor(Item $item)
+    {
+        if ($item->quality < self::MIN_QUALITY) {
+            $item->quality = self::MIN_QUALITY;
         }
     }
 }

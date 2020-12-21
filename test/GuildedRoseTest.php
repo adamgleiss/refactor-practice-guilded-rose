@@ -115,7 +115,7 @@ class GuildedRoseTest extends TestCase
         $item = new Item("Conjured", 3, 4);
         $gildedRose = new GuildedRose([$item]);
         $gildedRose->updateQuality();
-        $this->assertEquals("Conjured, 2, 3", (string)$item);
+        $this->assertEquals("Conjured, 2, 2", (string)$item);
     }
 
     public function testExpiredConjuredItem()
